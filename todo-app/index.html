@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo App</title>
+
+  <!-- 다크모드 깜빡임(FOUC) 방지: Tailwind CDN 로드 전에 즉시 실행 -->
+  <script>
+    (function () {
+      if (localStorage.getItem('todo-app-theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            personal: '#3b82f6',
+            work: '#ef4444',
+            study: '#22c55e',
+            other: '#6b7280',
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- 커스텀 스타일 (애니메이션 등) -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-200">
+
+  <!-- 헤더 -->
+  <header class="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+    <div class="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
+      <h1 class="text-xl font-bold tracking-tight">
+        <span class="text-blue-600 dark:text-blue-400">✓</span> Todo App
+      </h1>
+      <!-- 다크모드 토글 버튼 -->
+      <button
+        id="theme-toggle"
+        class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+        aria-label="다크모드 전환"
+      >
+        <!-- 아이콘은 JS에서 동적으로 변경 -->
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 -->
+  <main class="max-w-2xl mx-auto px-4 py-8 space-y-6">
+
+    <!-- 할 일 입력 영역 -->
+    <section id="input-section" class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+      <form id="todo-form" class="flex flex-col sm:flex-row gap-3">
+        <input
+          id="todo-input"
+          type="text"
+          placeholder="새 할 일을 입력하세요..."
+          maxlength="200"
+          autocomplete="off"
+          class="flex-1 px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all placeholder-gray-400 dark:placeholder-gray-500"
+        />
+        <div class="flex gap-2">
+          <select
+            id="category-select"
+            class="px-3 py-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 border border-transparent focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-sm cursor-pointer"
+          >
+            <option value="personal">개인</option>
+            <option value="work">업무</option>
+            <option value="study">학습</option>
+            <option value="other">기타</option>
+          </select>
+          <button
+            type="submit"
+            class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors shadow-sm"
+          >
+            추가
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 필터 영역 -->
+    <section id="filter-section" class="space-y-3">
+      <!-- 상태 필터 탭 -->
+      <div id="status-filter" class="flex gap-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-1 shadow-sm">
+        <button
+          data-status="all"
+          class="status-tab flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all active"
+        >
+          전체
+        </button>
+        <button
+          data-status="active"
+          class="status-tab flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all"
+        >
+          진행 중
+        </button>
+        <button
+          data-status="completed"
+          class="status-tab flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all"
+        >
+          완료
+        </button>
+      </div>
+
+      <!-- 카테고리 필터 태그 -->
+      <div id="category-filter" class="flex flex-wrap gap-2">
+        <button
+          data-category="all"
+          class="category-tab px-3 py-1.5 rounded-full text-xs font-medium border transition-all active"
+        >
+          전체
+        </button>
+        <button
+          data-category="personal"
+          class="category-tab px-3 py-1.5 rounded-full text-xs font-medium border transition-all"
+        >
+          개인
+        </button>
+        <button
+          data-category="work"
+          class="category-tab px-3 py-1.5 rounded-full text-xs font-medium border transition-all"
+        >
+          업무
+        </button>
+        <button
+          data-category="study"
+          class="category-tab px-3 py-1.5 rounded-full text-xs font-medium border transition-all"
+        >
+          학습
+        </button>
+        <button
+          data-category="other"
+          class="category-tab px-3 py-1.5 rounded-full text-xs font-medium border transition-all"
+        >
+          기타
+        </button>
+      </div>
+    </section>
+
+    <!-- 요약 정보 -->
+    <div id="todo-summary" class="text-sm text-gray-500 dark:text-gray-400 px-1">
+      <!-- JS에서 동적으로 업데이트 -->
+    </div>
+
+    <!-- 할 일 목록 -->
+    <section id="todo-list-section">
+      <ul id="todo-list" class="space-y-2">
+        <!-- JS에서 동적으로 렌더링 -->
+      </ul>
+
+      <!-- 빈 상태 안내 -->
+      <div id="empty-state" class="hidden py-16 text-center">
+        <div class="text-5xl mb-4">📋</div>
+        <p class="text-gray-500 dark:text-gray-400 font-medium">할 일이 없습니다</p>
+        <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">위에서 새 할 일을 추가해보세요!</p>
+      </div>
+    </section>
+
+    <!-- 하단 일괄 액션 -->
+    <footer id="bulk-actions" class="flex justify-end pt-2">
+      <button
+        id="clear-completed"
+        class="text-sm text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+      >
+        완료 항목 모두 삭제
+      </button>
+    </footer>
+
+  </main>
+
+  <!-- JavaScript 모듈 로드 (순서 중요) -->
+  <script src="js/store.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

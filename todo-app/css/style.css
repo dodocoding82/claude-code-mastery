@@ -1,0 +1,121 @@
+/* ─────────────────────────────────────────────────────────────
+   style.css - 커스텀 스타일 및 애니메이션
+   Tailwind CSS로 표현하기 어려운 스타일만 정의
+───────────────────────────────────────────────────────────── */
+
+/* ── 할 일 항목 진입 애니메이션 ── */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.todo-item {
+  animation: slideIn 0.2s ease-out;
+}
+
+/* ── 할 일 항목 삭제 애니메이션 ── */
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 80px;
+    margin-bottom: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+    max-height: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.todo-item.slide-out {
+  animation: slideOut 0.25s ease-in forwards;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── 입력 오류 시 흔들기 애니메이션 ── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.4s ease-in-out;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* ── 완료 체크박스 커스텀 스타일 ── */
+.todo-checkbox {
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.todo-checkbox:active {
+  transform: scale(0.85);
+}
+
+/* ── 스크롤바 커스터마이징 (웹킷 기반 브라우저) ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(107, 114, 128, 0.7);
+}
+
+/* ── 다크모드 스크롤바 ── */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgba(75, 85, 99, 0.6);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(107, 114, 128, 0.8);
+}
+
+/* ── 할 일 항목 hover 시 액션 버튼 표시 (모바일 대응) ── */
+@media (hover: none) {
+  .todo-actions {
+    opacity: 1 !important;
+  }
+}
+
+/* ── 카테고리 배지 폰트 스무딩 ── */
+.category-badge {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── 인라인 편집 입력 포커스 효과 ── */
+.todo-edit-input {
+  transition: box-shadow 0.15s ease;
+}
+
+/* ── 필터 탭 전환 애니메이션 ── */
+.status-tab,
+.category-tab {
+  transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
