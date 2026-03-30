@@ -7,3 +7,7 @@
   },
   "outputStyle": "default"
 }
+{
+  "cursor.aiGeneration.commitMessage.language": "korean",
+  "cursor.commitMessage.language": "ko"
+}
